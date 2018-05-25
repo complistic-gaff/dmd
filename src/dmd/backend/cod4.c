@@ -1563,7 +1563,7 @@ void cdshass(CodeBuilder& cdb,elem *e,regm_t *pretregs)
     unsigned byte = tybyte(e->Ety) != 0;        // 1 for byte operations
     tym_t tym = tybasic(e->Ety);                // type of result
     unsigned oper = e->Eoper;
-    assert(tysize(e2->Ety) <= REGSIZE);
+
 
     unsigned rex = (I64 && sz == 8) ? REX_W : 0;
 
@@ -1576,6 +1576,16 @@ void cdshass(CodeBuilder& cdb,elem *e,regm_t *pretregs)
     if (oper == OPshrass)
         oper = tyuns(tyml) ? OPshrass : OPashrass;
 #endif
+
+
+
+    if (tyxmmreg(tyml))
+    {
+        orthxmm(cdb,e,pretregs);
+        return;
+    }
+
+    assert(tysize(e2->Ety) <= REGSIZE);
 
     // Select opcodes. op2 is used for msw for long shifts.
 

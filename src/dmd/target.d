@@ -382,7 +382,17 @@ struct Target
             break;
 
         case TOK.leftShift, TOK.leftShiftAssign, TOK.rightShift, TOK.rightShiftAssign, TOK.unsignedRightShift, TOK.unsignedRightShiftAssign:
-            supported = false;
+            // only intergers short, int or long
+            if (tvec.isintegral() &&
+                // all ops are available for short and int
+                (tvec.elementType().size(Loc.initial) == 2 || tvec.elementType().size(Loc.initial) == 4) ||
+                // long only has << and >>> ops
+                (tvec.elementType().size(Loc.initial) == 8 &&
+                    (op == TOK.leftShift || op == TOK.leftShiftAssign || op == TOK.unsignedRightShift || op == TOK.unsignedRightShiftAssign)
+                ))
+                    supported = true;
+            else
+                supported = false;
             break;
 
         case TOK.add, TOK.addAssign, TOK.min, TOK.minAssign:

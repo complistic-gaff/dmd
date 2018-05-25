@@ -2368,6 +2368,12 @@ void cdshift(CodeBuilder& cdb,elem *e,regm_t *pretregs)
         oper = (tyuns(tyml)) ? OPshr : OPashr;
 #endif
 
+    if (tyxmmreg(tyml))
+    {
+        orthxmm(cdb,e,pretregs);
+        return;
+    }
+
     unsigned s1,s2;
     switch (oper)
     {

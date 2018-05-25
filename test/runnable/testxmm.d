@@ -270,9 +270,9 @@ void test2c()
     static assert(!__traits(compiles, v1 > v2));
     static assert(!__traits(compiles, v1 <= v2));
     static assert(!__traits(compiles, v1 >= v2));
-    static assert(!__traits(compiles, v1 << 1));
-    static assert(!__traits(compiles, v1 >> 1));
-    static assert(!__traits(compiles, v1 >>> 1));
+    v1 = v2 << 1;
+    v1 = v2 >> 1;
+    v1 = v2 >>> 1;
     static assert(!__traits(compiles, v1 && v2));
     static assert(!__traits(compiles, v1 || v2));
     v1 = ~v2;
@@ -290,9 +290,9 @@ void test2c()
     v1 ^= v2;
     static assert(!__traits(compiles, v1 ~= v2));
     static assert(!__traits(compiles, v1 ^^= v2));
-    static assert(!__traits(compiles, v1 <<= 1));
-    static assert(!__traits(compiles, v1 >>= 1));
-    static assert(!__traits(compiles, v1 >>>= 1));
+    v1 <<= 1;
+    v1 >>= 1;
+    v1 >>>= 1;
     v1 = v1 * 3;
 
     //  A cast from vector to non-vector is allowed only when the target is same size Tsarray.
@@ -331,9 +331,9 @@ void test2d()
     static assert(!__traits(compiles, v1 > v2));
     static assert(!__traits(compiles, v1 <= v2));
     static assert(!__traits(compiles, v1 >= v2));
-    static assert(!__traits(compiles, v1 << 1));
-    static assert(!__traits(compiles, v1 >> 1));
-    static assert(!__traits(compiles, v1 >>> 1));
+    v1 = v2 << 1;
+    v1 = v2 >> 1;
+    v1 = v2 >>> 1;
     static assert(!__traits(compiles, v1 && v2));
     static assert(!__traits(compiles, v1 || v2));
     v1 = ~v2;
@@ -351,9 +351,9 @@ void test2d()
     v1 ^= v2;
     static assert(!__traits(compiles, v1 ~= v2));
     static assert(!__traits(compiles, v1 ^^= v2));
-    static assert(!__traits(compiles, v1 <<= 1));
-    static assert(!__traits(compiles, v1 >>= 1));
-    static assert(!__traits(compiles, v1 >>>= 1));
+    v1 <<= 1;
+    v1 >>= 1;
+    v1 >>>= 1;
 
     //  A cast from vector to non-vector is allowed only when the target is same size Tsarray.
     static assert(!__traits(compiles, cast(byte)v1));       // 1byte
@@ -394,9 +394,9 @@ void test2e()
     static assert(!__traits(compiles, v1 > v2));
     static assert(!__traits(compiles, v1 <= v2));
     static assert(!__traits(compiles, v1 >= v2));
-    static assert(!__traits(compiles, v1 << 1));
-    static assert(!__traits(compiles, v1 >> 1));
-    static assert(!__traits(compiles, v1 >>> 1));
+    v1 = v2 << 1;
+    v1 = v2 >> 1;
+    v1 = v2 >>> 1;
     static assert(!__traits(compiles, v1 && v2));
     static assert(!__traits(compiles, v1 || v2));
     v1 = ~v2;
@@ -417,9 +417,9 @@ void test2e()
     v1 ^= v2;
     static assert(!__traits(compiles, v1 ~= v2));
     static assert(!__traits(compiles, v1 ^^= v2));
-    static assert(!__traits(compiles, v1 <<= 1));
-    static assert(!__traits(compiles, v1 >>= 1));
-    static assert(!__traits(compiles, v1 >>>= 1));
+    v1 <<= 1;
+    v1 >>= 1;
+    v1 >>>= 1;
 
     //  A cast from vector to non-vector is allowed only when the target is same size Tsarray.
     static assert(!__traits(compiles, cast(byte)v1));       // 1byte
@@ -460,9 +460,9 @@ void test2f()
     static assert(!__traits(compiles, v1 > v2));
     static assert(!__traits(compiles, v1 <= v2));
     static assert(!__traits(compiles, v1 >= v2));
-    static assert(!__traits(compiles, v1 << 1));
-    static assert(!__traits(compiles, v1 >> 1));
-    static assert(!__traits(compiles, v1 >>> 1));
+    v1 = v2 << 1;
+    v1 = v2 >> 1;
+    v1 = v2 >>> 1;
     static assert(!__traits(compiles, v1 && v2));
     static assert(!__traits(compiles, v1 || v2));
     v1 = ~v2;
@@ -483,9 +483,9 @@ void test2f()
     v1 ^= v2;
     static assert(!__traits(compiles, v1 ~= v2));
     static assert(!__traits(compiles, v1 ^^= v2));
-    static assert(!__traits(compiles, v1 <<= 1));
-    static assert(!__traits(compiles, v1 >>= 1));
-    static assert(!__traits(compiles, v1 >>>= 1));
+    v1 <<= 1;
+    v1 >>= 1;
+    v1 >>>= 1;
 
     //  A cast from vector to non-vector is allowed only when the target is same size Tsarray.
     static assert(!__traits(compiles, cast(byte)v1));       // 1byte
@@ -523,9 +523,9 @@ void test2g()
     static assert(!__traits(compiles, v1 > v2));
     static assert(!__traits(compiles, v1 <= v2));
     static assert(!__traits(compiles, v1 >= v2));
-    static assert(!__traits(compiles, v1 << 1));
-    static assert(!__traits(compiles, v1 >> 1));
-    static assert(!__traits(compiles, v1 >>> 1));
+    v1 = v2 << 1;
+    static assert(!__traits(compiles, v2 >> 1));
+    v1 = v2 >>> 1;
     static assert(!__traits(compiles, v1 && v2));
     static assert(!__traits(compiles, v1 || v2));
     v1 = ~v2;
@@ -543,9 +543,9 @@ void test2g()
     v1 ^= v2;
     static assert(!__traits(compiles, v1 ~= v2));
     static assert(!__traits(compiles, v1 ^^= v2));
-    static assert(!__traits(compiles, v1 <<= 1));
+    v1 <<= 1;
     static assert(!__traits(compiles, v1 >>= 1));
-    static assert(!__traits(compiles, v1 >>>= 1));
+    v1 >>>= 1;
 
     //  A cast from vector to non-vector is allowed only when the target is same size Tsarray.
     static assert(!__traits(compiles, cast(byte)v1));       // 1byte
@@ -583,9 +583,9 @@ void test2h()
     static assert(!__traits(compiles, v1 > v2));
     static assert(!__traits(compiles, v1 <= v2));
     static assert(!__traits(compiles, v1 >= v2));
-    static assert(!__traits(compiles, v1 << 1));
+    v1 = v2 << 1;
     static assert(!__traits(compiles, v1 >> 1));
-    static assert(!__traits(compiles, v1 >>> 1));
+    v1 = v2 >>> 1;
     static assert(!__traits(compiles, v1 && v2));
     static assert(!__traits(compiles, v1 || v2));
     v1 = ~v2;
@@ -603,9 +603,9 @@ void test2h()
     v1 ^= v2;
     static assert(!__traits(compiles, v1 ~= v2));
     static assert(!__traits(compiles, v1 ^^= v2));
-    static assert(!__traits(compiles, v1 <<= 1));
+    v1 <<= 1;
     static assert(!__traits(compiles, v1 >>= 1));
-    static assert(!__traits(compiles, v1 >>>= 1));
+    v1 >>>= 1;
 
     //  A cast from vector to non-vector is allowed only when the target is same size Tsarray.
     static assert(!__traits(compiles, cast(byte)v1));       // 1byte

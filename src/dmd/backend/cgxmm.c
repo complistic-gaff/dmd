@@ -54,6 +54,7 @@ bool isXMMstore(unsigned op)
 
 static void movxmmconst(CodeBuilder& cdb, unsigned xreg, unsigned sz, targ_size_t value, regm_t flags)
 {
+    printf("movxmmconst(xreg = %i, sz = %i, flags = %i)\n", xreg, sz, flags);
     /* Generate:
      *    MOV reg,value
      *    MOV xreg,reg
@@ -95,7 +96,7 @@ static void movxmmconst(CodeBuilder& cdb, unsigned xreg, unsigned sz, targ_size_
 
 void orthxmm(CodeBuilder& cdb, elem *e, regm_t *pretregs)
 {
-    //printf("orthxmm(e = %p, *pretregs = %s)\n", e, regm_str(*pretregs));
+    printf("orthxmm(e = %p, *pretregs = %s)\n", e, regm_str(*pretregs));
     elem *e1 = e->E1;
     elem *e2 = e->E2;
 
@@ -162,6 +163,36 @@ void orthxmm(CodeBuilder& cdb, elem *e, regm_t *pretregs)
     unsigned rreg = findreg(rretregs);
     unsigned op = xmmoperator(e1->Ety, e->Eoper);
 
+    if (e2->Eoper == OPconst)
+    {   // Handle: op xmm,imm8
+
+        int r=0;
+        switch (op)
+        {
+            case PSLLD:  r = 6; op = 0x660F72;  break;
+            case PSLLQ:  r = 6; op = 0x660F73;  break;
+            case PSLLW:  r = 6; op = 0x660F71;  break;
+            case PSRAD:  r = 4; op = 0x660F72;  break;
+            case PSRAW:  r = 4; op = 0x660F71;  break;
+            case PSRLD:  r = 2; op = 0x660F72;  break;
+            case PSRLQ:  r = 2; op = 0x660F73;  break;
+            case PSRLW:  r = 2; op = 0x660F71;  break;
+            case PSRLDQ: r = 3; op = 0x660F73;  break;
+            case PSLLDQ: r = 7; op = 0x660F73;  break;
+
+            default:
+                // not anything of interest
+                break;
+        }
+        if(r>0)
+        {
+            getregs(cdb,retregs);
+            cdb.genc2(op,modregrmx(3,r,reg-XMM0), el_tolong(e2));
+            return;
+        }
+
+    }
+
     /* We should take advantage of mem addressing modes for OP XMM,MEM
      * but we do not at the moment.
      */
@@ -198,7 +229,7 @@ void xmmeq(CodeBuilder& cdb, elem *e, unsigned op, elem *e1, elem *e2,regm_t *pr
     unsigned varreg;
     targ_int postinc;
 
-    //printf("xmmeq(e1 = %p, e2 = %p, *pretregs = %s)\n", e1, e2, regm_str(*pretregs));
+    printf("xmmeq(e1 = %p, e2 = %p, *pretregs = %s)\n", e1, e2, regm_str(*pretregs));
     int e2oper = e2->Eoper;
     tym_t tyml = tybasic(e1->Ety);              /* type of lvalue               */
     regm_t retregs = *pretregs;
@@ -322,6 +353,7 @@ Lp:
 
 void xmmcnvt(CodeBuilder& cdb,elem *e,regm_t *pretregs)
 {
+    printf("xmmcnvt(e = %p, *pretregs = %s)\n", e, regm_str(*pretregs));
     unsigned op=0, regs;
     tym_t ty;
     unsigned char rex = 0;
@@ -440,7 +472,9 @@ void xmmcnvt(CodeBuilder& cdb,elem *e,regm_t *pretregs)
  */
 
 void xmmopass(CodeBuilder& cdb,elem *e,regm_t *pretregs)
-{   elem *e1 = e->E1;
+{
+    printf("xmmopass(e = %p, *pretregs = %s)\n", e, regm_str(*pretregs));
+    elem *e1 = e->E1;
     elem *e2 = e->E2;
     tym_t ty1 = tybasic(e1->Ety);
     unsigned sz1 = _tysize[ty1];
@@ -514,6 +548,7 @@ void xmmopass(CodeBuilder& cdb,elem *e,regm_t *pretregs)
 
 void xmmpost(CodeBuilder& cdb,elem *e,regm_t *pretregs)
 {
+    printf("xmmpost(e = %p, *pretregs = %s)\n", e, regm_str(*pretregs));
     elem *e1 = e->E1;
     elem *e2 = e->E2;
     tym_t ty1 = tybasic(e1->Ety);
@@ -598,8 +633,8 @@ void xmmpost(CodeBuilder& cdb,elem *e,regm_t *pretregs)
 
 void xmmneg(CodeBuilder& cdb,elem *e,regm_t *pretregs)
 {
-    //printf("xmmneg()\n");
-    //elem_print(e);
+    printf("xmmneg()\n");
+    elem_print(e);
     assert(*pretregs);
     tym_t tyml = tybasic(e->E1->Ety);
     int sz = _tysize[tyml];
@@ -640,7 +675,9 @@ void xmmneg(CodeBuilder& cdb,elem *e,regm_t *pretregs)
  */
 
 unsigned xmmload(tym_t tym, bool aligned)
-{   unsigned op;
+{
+   printf("xmmload(tym = x%x)\n", tym);
+   unsigned op;
     if (tysize(tym) == 32)
         aligned = false;
     switch (tybasic(tym))
@@ -691,7 +728,9 @@ unsigned xmmload(tym_t tym, bool aligned)
  */
 
 unsigned xmmstore(tym_t tym, bool aligned)
-{   unsigned op;
+{
+   printf("xmmstore(tym = x%x)\n", tym);
+   unsigned op;
     switch (tybasic(tym))
     {
         case TYuint:
@@ -742,6 +781,7 @@ unsigned xmmstore(tym_t tym, bool aligned)
 
 static unsigned xmmoperator(tym_t tym, unsigned oper)
 {
+    printf("xmmstore(tym = x%x, oper = %i)\n", tym, oper);
     tym = tybasic(tym);
     unsigned op;
     switch (oper)
@@ -861,6 +901,68 @@ static unsigned xmmoperator(tym_t tym, unsigned oper)
                 case TYfloat4:  op = DIVPS;  break;
                 case TYdouble4:
                 case TYdouble2: op = DIVPD;  break;
+
+                default:        assert(0);
+            }
+            break;
+
+        case OPshl:
+        case OPshlass:
+            switch (tym)
+            {
+                // SIMD vector types
+                case TYshort16:
+                case TYushort16:
+                case TYshort8:
+                case TYushort8: op = PSLLW; break;
+                case TYlong8:
+                case TYulong8:
+                case TYlong4:
+                case TYulong4:  op = PSLLD; break;
+                case TYllong2:
+                case TYullong2:
+                case TYllong4:
+                case TYullong4: op = PSLLQ; break;
+
+                default:        assert(0);
+            }
+            break;
+
+        case OPashr:
+        case OPashrass:
+            switch (tym)
+            {
+                // SIMD vector types
+                case TYshort16:
+                case TYushort16:
+                case TYshort8:
+                case TYushort8: op = PSRAW; break;
+                case TYlong8:
+                case TYulong8:
+                case TYlong4:
+                case TYulong4:  op = PSRAD; break;
+
+                default:        assert(0);
+            }
+            break;
+
+        case OPshr:
+        case OPshrass:
+            switch (tym)
+            {
+                // SIMD vector types
+                case TYshort16:
+                case TYushort16:
+                case TYshort8:
+                case TYushort8: op = PSRLW; break;
+                case TYlong8:
+                case TYulong8:
+                case TYlong4:
+                case TYulong4:  op = PSRLD; break;
+                case TYllong2:
+                case TYullong2:
+                case TYllong4:
+                case TYullong4: op = PSRLQ; break;
 
                 default:        assert(0);
             }
@@ -1192,7 +1294,7 @@ void cdvector(CodeBuilder& cdb, elem *e, regm_t *pretregs)
  */
 void cdvecsto(CodeBuilder& cdb, elem *e, regm_t *pretregs)
 {
-    //printf("cdvecsto()\n");
+    printf("cdvecsto()\n");
     //elem_print(e);
     elem *op1 = e->E1;
     elem *op2 = e->E2->E2;
@@ -1211,7 +1313,7 @@ void cdvecsto(CodeBuilder& cdb, elem *e, regm_t *pretregs)
  */
 void cdvecfill(CodeBuilder& cdb, elem *e, regm_t *pretregs)
 {
-    //printf("cdvecfill(e = %p, *pretregs = %s)\n",e,regm_str(*pretregs));
+    printf("cdvecfill(e = %p, *pretregs = %s)\n",e,regm_str(*pretregs));
 
     regm_t retregs = *pretregs & XMMREGS;
     if (!retregs)
